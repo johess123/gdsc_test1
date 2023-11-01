@@ -1,5 +1,6 @@
 # 先導入後面會用到的套件
 import requests # 請求工具
+from bs4 import BeautifulSoup # 解析工具
 import datetime # 取得日期
 import time # 用來暫停程式
 
@@ -10,18 +11,21 @@ date = datetime.datetime.today().strftime("%Y%m%d")
 for i in range(len(stock)): # 迴圈依序爬股價
     # 現在處理的股票
     stockid = stock[i]
-    # 網址塞入股票編號 & 日期
-    url = "https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_AVG?date="+date+"&stockNo="+stockid+"&response=json&_=1697638279385"
-    # 發送請求，並將回應轉成 Json 格式
+    # 網址塞入股票編號
+    url = "https://tw.stock.yahoo.com/quote/"+stockid+".TW"
+    # 發送請求
     r = requests.get(url)
-    result = r.json()
+    # 解析回應的 HTML
+    soup = BeautifulSoup(r.text, 'html.parser')
+    # 定位股價
+    price = soup.find('span',class_='Fz(32px) Fw(b) Lh(1) Mend(16px) D(f) Ai(c) C($c-trend-down)').getText()
     # 回報的訊息 (可自訂)
-    message = "股票 "+str(stockid)+" 今日的收盤價為 "+result["data"][-2][1]
+    message = "股票 "+stockid+" 即時股價為 "+price
     # 用 telegram bot 回報股價
     # bot token
-    token = "你的 bot token"
+    token = "6718510325:AAF1by3LnmV2nPit9NBtxKdExhUK1MEOISY"
     # 使用者 id
-    chat_id="你的 telegram id"
+    chat_id="5740033148"
     # bot 送訊息
     url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
     requests.get(url)
