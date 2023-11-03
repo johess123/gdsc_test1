@@ -18,7 +18,7 @@ for i in range(len(stock)): # 迴圈依序爬股價
     # 解析回應的 HTML
     soup = BeautifulSoup(r.text, 'html.parser')
     # 定位股價
-    price = soup.find('span',class_='Fz(32px) Fw(b) Lh(1) Mend(16px) D(f) Ai(c) C($c-trend-down)').getText()
+    price = soup.find('span',class_=[Fz(32px) Fw(b) Lh(1) Mend(16px) D(f) Ai(c) C($c-trend-down),Fz(32px) Fw(b) Lh(1) Mend(16px) D(f) Ai(c),Fz(32px) Fw(b) Lh(1) Mend(16px) D(f) Ai(c) C($c-trend-up)]).getText()
     # 回報的訊息 (可自訂)
     message = "股票 "+stockid+" 即時股價為 "+price
     # 用 telegram bot 回報股價
